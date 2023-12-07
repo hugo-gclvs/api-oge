@@ -44,6 +44,8 @@ class API:
         return response.text
 
     def getAbsences(self):
+        test = self.select_semester(6)
+        print(test)
 
         page = self.getAbsencesPage()
         soup = BeautifulSoup(page, 'html.parser')
@@ -59,3 +61,26 @@ class API:
 
         return absences
 
+    def select_semester(self, semester):
+        headers = {
+            "Faces-Request": "partial/ajax",
+            "X-Requested-With": "XMLHttpRequest"
+        }
+
+        data = {
+            "javax.faces.partial.ajax": "true",
+            "javax.faces.source": "mainBilanForm%3Aj_id_1t",
+            "javax.faces.partial.execute": "mainBilanForm%3Aj_id_1t",
+            "javax.faces.partial.render": "mainBilanForm",
+            "mainBilanForm%3Aj_id_1t": "mainBilanForm%3Aj_id_1t",
+            "mainBilanForm_SUBMIT": "1",
+            "javax.faces.ViewState": "0",
+            "mainBilanForm%3Aj_id_1t_menuid": str(int(semester) - 1),
+            "i": str(int(semester) - 1)
+        }
+
+        response = self.session.post(self.absences_url, headers=headers, data=data)
+
+        # Process the response to extract the real content
+        # content = response.text.split("![CDATA[")[1].split("]]")[0]
+        return response
