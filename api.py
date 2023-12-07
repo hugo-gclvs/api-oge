@@ -2,9 +2,11 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from getpass import getpass
+from dotenv import load_dotenv
+import os
 
 class API:
-    def __init__(self, user=input("Username: "), pwd=getpass("Password: ")):
+    def __init__(self, user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD")):
         self.username = user
         self.password = pwd
         self.home_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/"
@@ -42,6 +44,7 @@ class API:
         return response.text
 
     def getAbsences(self):
+
         page = self.getAbsencesPage()
         soup = BeautifulSoup(page, 'html.parser')
 
@@ -55,3 +58,4 @@ class API:
             absences.append(absence_data)
 
         return absences
+
