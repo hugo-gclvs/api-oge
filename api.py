@@ -5,6 +5,8 @@ from getpass import getpass
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 class API:
     def __init__(self, user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD")):
         self.username = user
