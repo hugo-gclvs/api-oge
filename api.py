@@ -90,7 +90,7 @@ class API:
             "javax.faces.source": "ficheEtudiantForm:j_id_16_" + str(semester),
             "javax.faces.partial.execute": "@all",
             "javax.faces.partial.render": "ficheEtudiantForm:panel",
-            "ficheEtudiantForm:j_id_16_" + str(semester): "ficheEtudiantForm:j_id_16_2",
+            "ficheEtudiantForm:j_id_16_" + str(semester): "ficheEtudiantForm:j_id_16_" + str(semester),
             "ficheEtudiantForm_SUBMIT": "1",
             "javax.faces.ViewState": "0"
         }

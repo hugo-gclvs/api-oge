@@ -4,7 +4,9 @@ from getpass import getpass
 def main():
     api = API()
     api.login()
-    absences = api.getAbsences(3)
+    
+    semester = int(input("Semester: "))
+    absences = api.getAbsences(semester)
     print(absences)
 
 if __name__ == "__main__":
