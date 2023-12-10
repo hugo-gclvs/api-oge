@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from getpass import getpass
 from dotenv import load_dotenv
 import os
+from model.Absence import Absence
 
 load_dotenv()
 
@@ -59,13 +60,36 @@ class API:
         absences_table = soup.find_all('tr', class_='ui-widget-content')
         print(f"Found {len(absences_table)} absences")
 
-        absences = []
+        absences_data = []
         for row in absences_table:
             columns = row.find_all('td', class_='ui-panelgrid-cell')
             absence_data = [column.get_text(strip=True) for column in columns]
-            absences.append(absence_data)
+            absences_data.append(absence_data)
+
+        absences = self.create_absences(absences_data)
 
         return absences
+    
+    def create_absences(self, absences_data):
+        absences = []
+        for data in absences_data:
+            if len(data) >= 4:  # Check if the row is not empty
+                # Split subject and subject type
+                subject_parts = data[0].split(' ')
+                subject = ' '.join(subject_parts[:-1]).strip()
+                subjectType = subject_parts[-1].strip()
+
+                # Extract other fields
+                classroom = data[1].strip()  # Assuming classroom is the second column
+                teacher = data[2].strip()
+                date = data[3].strip()
+                justification = data[4] if len(data) > 4 else "Non spécifiée"
+
+                # Create an Absence object
+                absence = Absence(subject, subjectType, classroom, teacher, date, justification)
+                absences.append(absence)
+        return absences
+
 
     def getGrades(self, semester):
         gradesPage = self.selectGradesSemester(semester)
