@@ -51,12 +51,10 @@ class API:
         response = self.session.get(self.grades_url)
         return response.text
     
-    def getAbsences(self):
-        test = self.select_semester(1)
-        print(test)
+    def getAbsences(self, semester):
+        absencesPage = self.selectAbsencesSemester(semester)
 
-        page = self.getAbsencesPage()
-        soup = BeautifulSoup(page, 'html.parser')
+        soup = BeautifulSoup(absencesPage, 'html.parser')
 
         absences_table = soup.find_all('tr', class_='ui-widget-content')
         print(f"Found {len(absences_table)} absences")
@@ -69,16 +67,41 @@ class API:
 
         return absences
 
-    def getGrades(self):
-        gradesPage = self.selectGradesSemester(2)
+    def getGrades(self, semester):
+        gradesPage = self.selectGradesSemester(semester)
 
         soup = BeautifulSoup(gradesPage, 'html.parser')
 
-        print(soup)
+        # To do later...
 
         grades = []
 
         return grades
+
+    def selectAbsencesSemester(self, semester):
+        headers = {
+            "Faces-Request": "partial/ajax",
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        }
+
+        data = {
+            "javax.faces.partial.ajax": "true",
+            "javax.faces.source": "ficheEtudiantForm:j_id_16_" + str(semester),
+            "javax.faces.partial.execute": "@all",
+            "javax.faces.partial.render": "ficheEtudiantForm:panel",
+            "ficheEtudiantForm:j_id_16_" + str(semester): "ficheEtudiantForm:j_id_16_2",
+            "ficheEtudiantForm_SUBMIT": "1",
+            "javax.faces.ViewState": "0"
+        }
+
+        # Send the request
+        response = self.session.post(self.absences_url, headers=headers, data=data)
+
+        # Process the response to extract the real content
+        content = response.text.split("![CDATA[")[1].split("]]")[0]
+
+        return content
 
     def selectGradesSemester(self, semester):
         headers = {
