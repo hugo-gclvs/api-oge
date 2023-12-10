@@ -34,8 +34,6 @@ class API:
         }
         login_response = self.session.post(self.login_url, data=payload)
 
-
-
         if "Connexion - CAS" not in login_response.text:
             print("Login successful")
             return True
@@ -72,21 +70,17 @@ class API:
         return absences
 
     def getGrades(self):
-        test = self.select_semester(1)
+        gradesPage = self.selectGradesSemester(2)
 
-        # page = self.getGradesPage()
-        # soup = BeautifulSoup(page, 'html.parser')
+        soup = BeautifulSoup(gradesPage, 'html.parser')
 
-        # print(soup)
-
-        # non_empty_gridcells = soup.find_all(lambda tag: tag.name == 'td' and tag.get('role') == 'gridcell' and tag.text.strip())
-        # print(f"Found {(len(non_empty_gridcells)/2)-1} grades")
+        print(soup)
 
         grades = []
 
         return grades
 
-    def select_semester(self, semester):
+    def selectGradesSemester(self, semester):
         headers = {
             "Faces-Request": "partial/ajax",
             "X-Requested-With": "XMLHttpRequest",
@@ -95,21 +89,20 @@ class API:
 
         data = {
             "javax.faces.partial.ajax": "true",
-            "javax.faces.source": "mainBilanForm%j_id_15", #mainBilanForm:j_id_15
-            "javax.faces.partial.execute": "mainBilanForm%j_id_15",
+            "javax.faces.source": "mainBilanForm:j_id_15",
+            "javax.faces.partial.execute": "mainBilanForm:j_id_15",
             "javax.faces.partial.render": "mainBilanForm",
-            "mainBilanForm%j_id_15": "mainBilanForm%j_id_15",
+            "mainBilanForm:j_id_15": "mainBilanForm:j_id_15",
             "i": str(int(semester) - 1),
-            "mainBilanForm%3Aj_id_1t_menuid": str(int(semester) - 1),
+            "mainBilanForm:j_id_15_menuid": str(int(semester) - 1),
             "mainBilanForm_SUBMIT": "1",
             "javax.faces.ViewState": "0"
         }
 
-        response = self.session.post(self.absences_url, headers=headers, data=data)
-        print(response.text)
+        # Send the request
+        response = self.session.post(self.grades_url, headers=headers, data=data)
+
         # Process the response to extract the real content
-        # content = response.text.split("![CDATA[")[1].split("]]")[0]
+        content = response.text.split("![CDATA[")[1].split("]]")[0]
 
-        # print(content)
-
-        return response
+        return content
