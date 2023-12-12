@@ -4,8 +4,7 @@ def main():
     api = OgeAPI()
     api.login()
     
-    semester = int(input("Semester: "))
-    absences = api.getAbsences(semester)
+    absences = api.getAllAbsences()
 
     print(absences)
 

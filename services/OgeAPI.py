@@ -147,7 +147,7 @@ class OgeAPI:
         response = self.session.get(self.grades_url)
         return response.text
     
-    def getAbsences(self, semester):
+    def getAllAbsences(self):
         """
         This method is used to get the absences from the OGE.
 
@@ -157,8 +157,72 @@ class OgeAPI:
         Returns:
             list: The absences.
         """
-        absencesPage = self._selectAbsencesSemester(semester)
-        return data_processing.create_absences(absencesPage) if absencesPage else []
+        semesters = self._countSemesters()
+
+        absences = []
+        for semester in range(1, semesters + 1):
+            absencesPage = self._selectAbsencesSemester(semester)
+            absences += data_processing.create_absences(absencesPage) if absencesPage else []
+
+        return absences
+    
+    def _countSemesters(self):
+        """
+        This method is used to count the number of semesters.
+
+        Parameters:
+            None
+
+        Returns:
+            int: The number of semesters.
+        """
+        try:
+            minSemester = self._getMinSemester()
+            maxSemester = self._getMaxSemester()
+            return maxSemester - minSemester + 1
+        except Exception as e:
+            logging.error(f"Error in counting semesters: {e}")
+            return 0
+        
+    def _getMinSemester(self):
+        """
+        This method is used to get the minimum semester.
+
+        Parameters:
+            None
+
+        Returns:
+            int: The minimum semester.
+        """
+        try:
+            absencesPage = self.getAbsencesPage()
+            soup = BeautifulSoup(absencesPage, 'html.parser')
+            min_semester_text = soup.find('span', class_='ui-menuitem-text').get_text()
+            min_semester = int(min_semester_text.split()[-1])
+            return min_semester
+        except Exception as e:
+            logging.error(f"Error in getting min semester: {e}")
+            return 0
+        
+    def _getMaxSemester(self):
+        """
+        This method is used to get the maximum semester.
+
+        Parameters:
+            None
+
+        Returns:
+            int: The maximum semester.
+        """
+        try:
+            absencesPage = self.getAbsencesPage()
+            soup = BeautifulSoup(absencesPage, 'html.parser')
+            max_semester_text = soup.find_all('span', class_='ui-menuitem-text')[-1].get_text()
+            max_semester = int(max_semester_text.split()[-1])
+            return max_semester
+        except Exception as e:
+            logging.error(f"Error in getting max semester: {e}")
+            return 0
 
     def _selectAbsencesSemester(self, semester):
         """
