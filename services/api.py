@@ -8,7 +8,7 @@ from model.Absence import Absence
 
 load_dotenv()
 
-class API:
+class OgeAPI:
     def __init__(self, user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD")):
         self.username = user
         self.password = pwd
@@ -66,28 +66,25 @@ class API:
             absence_data = [column.get_text(strip=True) for column in columns]
             absences_data.append(absence_data)
 
+        print(absences_data)
+
         absences = self.create_absences(absences_data)
 
         return absences
     
-    def create_absences(self, absences_data):
+    def create_absences(self, data):
         absences = []
-        for data in absences_data:
-            if len(data) >= 4:  # Check if the row is not empty
-                # Split subject and subject type
-                subject_parts = data[0].split(' ')
-                subject = ' '.join(subject_parts[:-1]).strip()
-                subjectType = subject_parts[-1].strip()
-
-                # Extract other fields
-                classroom = data[1].strip()  # Assuming classroom is the second column
-                teacher = data[2].strip()
-                date = data[3].strip()
-                justification = data[4] if len(data) > 4 else "Non spécifiée"
-
-                # Create an Absence object
-                absence = Absence(subject, subjectType, classroom, teacher, date, justification)
-                absences.append(absence)
+        for item in data:
+            if item:
+                # Séparer le sujet et le type du sujet
+                details = item[0].split('\n')[0].strip().rsplit(' ', 2)
+                subject = ' '.join(details[:-2])
+                subjectType = details[-2]
+                classroom = details[-1].split('(')[0]
+                teacher = item[1]
+                date = item[2]
+                justification = item[3] if len(item) > 3 else "Non précisé"
+                absences.append(Absence(subject, subjectType, classroom, teacher, date, justification))
         return absences
 
 
