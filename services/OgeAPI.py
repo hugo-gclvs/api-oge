@@ -68,9 +68,9 @@ class OgeAPI:
 
         print(absences_data)
 
-        absences = self.create_absences(absences_data)
+        # absences = self.create_absences(absences_data)
 
-        return absences
+        return absences_data
     
     def create_absences(self, data):
         absences = []
