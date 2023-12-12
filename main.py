@@ -1,4 +1,4 @@
-from services.api import *
+from services.OgeAPI import *
 from getpass import getpass
 
 def main():
