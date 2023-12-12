@@ -1,46 +1,56 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from getpass import getpass
-from dotenv import load_dotenv
 import os
-from model.Absence import Absence
+import logging
+from utils import data_processing
+from dotenv import load_dotenv
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 
 class OgeAPI:
     def __init__(self, user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD")):
         self.username = user
         self.password = pwd
+        self.session = requests.Session()
+        self.initialize_urls()
+
+    def initialize_urls(self):
         self.home_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/"
         self.login_url = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=https%3A%2F%2Fiutdijon.u-bourgogne.fr%2Foge-esirem%2F"
         self.absences_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/stylesheets/etu/absencesEtu.xhtml"
         self.grades_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/stylesheets/etu/bilanEtu.xhtml"
-        self.session = requests.Session()
-
-        print(f"API created")
-
-    def get(self, url):
-        print(f"Get {url}")
-        return self.session.get(url)
 
     def login(self):
-        response = self.session.get(self.login_url)
-        execution = re.search(r'name="execution" value="([^"]+)"', response.text).group(1)
+        try:
+            execution = self._get_execution_token(self.login_url)
+            return self._perform_login(execution)
+        except Exception as e:
+            logging.error(f"Login failed: {e}")
+            return False
+        
+    def _get_execution_token(self, url):
+        response = self.session.get(url, timeout=5)
+        return re.search(r'name="execution" value="([^"]+)"', response.text).group(1)
+
+    def _perform_login(self, execution):
         payload = {
             'username': self.username,
             'password': self.password,
             'execution': execution,
             '_eventId': 'submit'
         }
-        login_response = self.session.post(self.login_url, data=payload)
-
-        if "Connexion - CAS" not in login_response.text:
-            print("Login successful")
+        response = self.session.post(self.login_url, data=payload, timeout=5)
+        if "Connexion - CAS" not in response.text:
+            logging.info("Login successful")
             return True
-        else:
-            print("Login failed")
-            return False
+        logging.error("Login failed")
+        return False
+    
+    def get(self, url):
+        print(f"Get {url}")
+        return self.session.get(url)
 
     def getAbsencesPage(self):
         print("Get absences page...")
@@ -53,60 +63,30 @@ class OgeAPI:
         return response.text
     
     def getAbsences(self, semester):
-        absencesPage = self.selectAbsencesSemester(semester)
+        absencesPage = self._selectAbsencesSemester(semester)
+        return data_processing.create_absences(absencesPage) if absencesPage else []
 
-        soup = BeautifulSoup(absencesPage, 'html.parser')
-
-        absences_table = soup.find_all('tr', class_='ui-widget-content')
-        print(f"Found {len(absences_table)} absences")
-
-        absences_data = []
-        for row in absences_table:
-            columns = row.find_all('td', class_='ui-panelgrid-cell')
-            absence_data = [column.get_text(strip=True) for column in columns]
-            absences_data.append(absence_data)
-
-        print(absences_data)
-
-        # absences = self.create_absences(absences_data)
-
-        return absences_data
-    
-    def create_absences(self, data):
-        absences = []
-        for item in data:
-            if item:
-                # Séparer le sujet et le type du sujet
-                details = item[0].split('\n')[0].strip().rsplit(' ', 2)
-                subject = ' '.join(details[:-2])
-                subjectType = details[-2]
-                classroom = details[-1].split('(')[0]
-                teacher = item[1]
-                date = item[2]
-                justification = item[3] if len(item) > 3 else "Non précisé"
-                absences.append(Absence(subject, subjectType, classroom, teacher, date, justification))
-        return absences
-
-
-    def getGrades(self, semester):
-        gradesPage = self.selectGradesSemester(semester)
-
-        soup = BeautifulSoup(gradesPage, 'html.parser')
-
-        # To do later...
-
-        grades = []
-
-        return grades
-
-    def selectAbsencesSemester(self, semester):
-        headers = {
+    def _selectAbsencesSemester(self, semester):
+        try:
+            response = self.session.post(self.absences_url, headers=self._get_headers(), data=self._get_absences_data(semester), timeout=5)
+            return self._extract_content(response)
+        except Exception as e:
+            logging.error(f"Error in selecting absences semester: {e}")
+            return None
+        
+    def _extract_content(self, response):
+        content = response.text.split("![CDATA[")[1].split("]]")[0]
+        return content
+        
+    def _get_headers(self):
+        return {
             "Faces-Request": "partial/ajax",
             "X-Requested-With": "XMLHttpRequest",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
         }
-
-        data = {
+    
+    def _get_absences_data(self, semester):
+        return {
             "javax.faces.partial.ajax": "true",
             "javax.faces.source": "ficheEtudiantForm:j_id_16_" + str(semester),
             "javax.faces.partial.execute": "@all",
@@ -115,14 +95,6 @@ class OgeAPI:
             "ficheEtudiantForm_SUBMIT": "1",
             "javax.faces.ViewState": "0"
         }
-
-        # Send the request
-        response = self.session.post(self.absences_url, headers=headers, data=data)
-
-        # Process the response to extract the real content
-        content = response.text.split("![CDATA[")[1].split("]]")[0]
-
-        return content
 
     def selectGradesSemester(self, semester):
         headers = {
@@ -150,3 +122,14 @@ class OgeAPI:
         content = response.text.split("![CDATA[")[1].split("]]")[0]
 
         return content
+    
+    def getGrades(self, semester):
+        gradesPage = self.selectGradesSemester(semester)
+
+        soup = BeautifulSoup(gradesPage, 'html.parser')
+
+        # To do later...
+
+        grades = []
+
+        return grades
