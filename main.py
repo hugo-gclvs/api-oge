@@ -1,5 +1,4 @@
 from services.OgeAPI import *
-from getpass import getpass
 
 def main():
     api = OgeAPI()
