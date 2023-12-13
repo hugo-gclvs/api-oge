@@ -1,3 +1,5 @@
+import re
+
 class Absence():
 	def __init__(self, subject, subjectType, classroom, teacher, date, justification):
 		self.subject = subject
@@ -8,4 +10,5 @@ class Absence():
 		self.justification = justification
 
 	def __str__(self):
-		return "Absence: " + self.subject + " - " + self.subjectType + " - " + self.teacher + " - " + self.date + " - " + self.justification
+		return "Absence: " + self.subject + " - " + self.subjectType + " - " + self.classroom + " - " + self.teacher + " - " + self.date + " - " + self.justification
+

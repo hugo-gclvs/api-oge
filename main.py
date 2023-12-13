@@ -6,7 +6,8 @@ def main():
     
     absences = api.getAllAbsences()
 
-    print(absences)
+    for absence in absences:
+        print(absence.__str__())
 
 if __name__ == "__main__":
     main()

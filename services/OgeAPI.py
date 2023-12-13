@@ -1,4 +1,5 @@
 import re
+import time
 import requests
 from bs4 import BeautifulSoup
 import os
@@ -160,9 +161,10 @@ class OgeAPI:
         semesters = self._countSemesters()
 
         absences = []
-        for semester in range(1, semesters + 1):
+        for semester in range(semesters, 0, -1):
             absencesPage = self._fetchAbsencesForSemester(semester)
-            absences += data_processing.create_absences(absencesPage) if absencesPage else []
+            if absencesPage:
+                absences += data_processing.create_absences(absencesPage)
 
         return absences
     

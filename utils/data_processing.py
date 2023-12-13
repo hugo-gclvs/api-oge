@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from model.Absence import Absence
+from model.AbsenceProcessor import AbsenceProcessor
 
 def create_absences(absencesPage):
 	soup = BeautifulSoup(absencesPage, 'html.parser')
@@ -13,4 +14,10 @@ def create_absences(absencesPage):
 		absence_data = [column.get_text(strip=True) for column in columns]
 		absences_data.append(absence_data)
 
-	return absences_data
+	absences = []
+
+	processor = AbsenceProcessor(absences_data)
+	absences = processor.process_all()
+
+	return absences
+	
