@@ -161,7 +161,7 @@ class OgeAPI:
 
         absences = []
         for semester in range(1, semesters + 1):
-            absencesPage = self._selectAbsencesSemester(semester)
+            absencesPage = self._fetchAbsencesForSemester(semester)
             absences += data_processing.create_absences(absencesPage) if absencesPage else []
 
         return absences
@@ -224,7 +224,7 @@ class OgeAPI:
             logging.error(f"Error in getting max semester: {e}")
             return 0
 
-    def _selectAbsencesSemester(self, semester):
+    def _fetchAbsencesForSemester(self, semester):
         """
         This method is used to select the absences semester.
 
