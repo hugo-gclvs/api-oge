@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
-from model.Absence import Absence
-from model.AbsenceProcessor import AbsenceProcessor
+from webApp.models import AbsenceProcessor
+
 
 def create_absences(absencesPage):
 	soup = BeautifulSoup(absencesPage, 'html.parser')

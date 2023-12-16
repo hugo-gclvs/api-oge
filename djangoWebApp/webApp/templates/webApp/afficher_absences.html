@@ -1,0 +1,15 @@
+<!-- afficher_absences.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Absences</title>
+</head>
+<body>
+    <h1>Liste des Absences</h1>
+    <ul>
+        {% for absence in absences %}
+            <li>{{ absence }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

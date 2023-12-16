@@ -4,7 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import logging
-from utils import data_processing
+from webApp.utils import data_processing
+
 from dotenv import load_dotenv
 
 load_dotenv()
