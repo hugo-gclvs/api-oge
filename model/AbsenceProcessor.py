@@ -1,4 +1,5 @@
-import re
+from datetime import datetime
+import time
 from model.Absence import Absence
 
 class AbsenceProcessor:
@@ -17,7 +18,7 @@ class AbsenceProcessor:
     def _determine_parser(self, entry):
         if "ITC" in entry or "MDD" in entry:
             return self._parse_itc_format
-        elif "CM" in entry or "TD" in entry or "TP" in entry:
+        elif "CM" in entry or "TD" in entry or "TP" in entry or "Projets" in entry:
             return self._parse_standard_format
         # Add more conditions for different formats
         return None
@@ -31,7 +32,7 @@ class AbsenceProcessor:
 
         # Find the index where CM, TD, or TP appears
         for i, part in enumerate(subject_parts):
-            if part in ["CM", "TD", "TP"]:
+            if part in ["CM", "TD", "TP", "Projets"]:
                 subject_type_index = i
                 break
 
@@ -48,9 +49,6 @@ class AbsenceProcessor:
 
         return self._create_absence_object(entry, subject, subject_type, classroom)
 
-
-
-
     def _parse_itc_format(self, entry):
         # Extracting the subject and classroom from the entry
         subject_details = entry[0].split(' \n ')
@@ -63,9 +61,24 @@ class AbsenceProcessor:
 
         return self._create_absence_object(entry, subject_name, subject_type, classroom)
 
-
     def _create_absence_object(self, entry, subject, subjectType, classroom):
         teacher = entry[1]
-        date = entry[2]
+        start_date, end_date = self.convert_to_timestamps(entry[2])
         justification = entry[3] if len(entry) > 3 else "Justifié"
-        return Absence(subject, subjectType, classroom, teacher, date, justification)
+        return Absence(subject, subjectType, classroom, teacher, start_date, end_date, justification)
+    
+    def convert_to_timestamps(self, date_str):
+        date_part, times_part = date_str.replace("Le ", "").split(' de ')
+        start_time_str, end_time_str = times_part.split(' à ')
+
+        # Combining date and start time, and converting to a timestamp
+        start_datetime_str = f"{date_part} {start_time_str}"
+        start_dt_obj = datetime.strptime(start_datetime_str, "%d/%m/%Y %H:%M")
+        start_timestamp = int(time.mktime(start_dt_obj.timetuple()))
+
+        # Combining date and end time, and converting to a timestamp
+        end_datetime_str = f"{date_part} {end_time_str}"
+        end_dt_obj = datetime.strptime(end_datetime_str, "%d/%m/%Y %H:%M")
+        end_timestamp = int(time.mktime(end_dt_obj.timetuple()))
+
+        return start_timestamp, end_timestamp
