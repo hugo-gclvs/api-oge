@@ -2,10 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .services.OgeAPI import OgeAPI
 
-def afficher_donnees(request):
-    # Logique pour récupérer et traiter les données
-    donnees = "Contenu des données"
-    return HttpResponse(donnees)
+def welcome_page(request):
+    return HttpResponse("Bienvenue sur la page d'accueil de l'application web")
 
 def afficher_absences(request):
     api = OgeAPI()
