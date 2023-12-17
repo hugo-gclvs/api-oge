@@ -5,7 +5,7 @@ from .services.OgeAPI import OgeAPI
 def welcome_page(request):
     return HttpResponse("Bienvenue sur la page d'accueil de l'application web")
 
-def afficher_absences(request):
+def get_all_absences(request):
     api = OgeAPI()
     api.login()
 
@@ -14,4 +14,4 @@ def afficher_absences(request):
     except Exception as e:
       absences = []
 
-    return render(request, 'webApp/afficher_absences.html', {'absences': absences})
+    return render(request, 'webApp/get_all_absences.html', {'absences': absences})
