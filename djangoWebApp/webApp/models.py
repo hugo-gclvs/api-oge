@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from datetime import datetime
 import time
@@ -63,17 +64,26 @@ class AbsenceProcessor:
 
         return self._create_absence_object(entry, subject, subject_type, classroom)
 
+    import re
+
     def _parse_itc_format(self, entry):
-        # Extracting the subject and classroom from the entry
         subject_details = entry[0].split(' \n ')
         subject_parts = subject_details[0].split('_')
-        subject_name = ' '.join(subject_parts[:2])  # Assuming 'ITC316_TP2_ElecNum' format
-        subject_type = subject_parts[2]  # Assuming the third part is the subject type
 
-        # Extracting the classroom info
+        # Code du cours (ex : 'ITC316') et description supplémentaire, si elle existe
+        subject_name = subject_parts[0]
+        if len(subject_parts) > 2:
+            subject_name += ' ' + ' '.join(subject_parts[2:])
+
+        # Extraire uniquement les lettres pour le type de cours (ex : 'TP2' -> 'TP')
+        subject_type_match = re.match(r"([A-Za-z]+)", subject_parts[1])
+        subject_type = subject_type_match.group(0) if subject_type_match else "Unknown"
+
+        # Informations sur la salle de classe
         classroom = subject_details[1].split(' (')[0]
 
         return self._create_absence_object(entry, subject_name, subject_type, classroom)
+
 
     def _create_absence_object(self, entry, subject, subjectType, classroom):
         teacher = entry[1]
