@@ -8,8 +8,8 @@ class Absence():
 		self.subjectType = subjectType
 		self.classroom = classroom
 		self.teacher = teacher
-		self.start_date = start_date
-		self.end_date = end_date
+		self.start_date = datetime.fromtimestamp(start_date)
+		self.end_date = datetime.fromtimestamp(end_date)
 		self.justification = justification
 
 	def __str__(self):

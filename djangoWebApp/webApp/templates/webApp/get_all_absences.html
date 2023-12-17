@@ -3,6 +3,8 @@
 <html>
 <head>
     <title>Absences</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -59,8 +61,8 @@
                 <td>{{ absence.subjectType }}</td>
                 <td>{{ absence.classroom }}</td>
                 <td>{{ absence.teacher }}</td>
-                <td>{{ absence.start_date }}</td>
-                <td>{{ absence.end_date }}</td>
+                <td>{{ absence.start_date|date:"d/m/Y H:i" }}</td>
+                <td>{{ absence.end_date|date:"d/m/Y H:i" }}</td>
                 <td>{{ absence.justification }}</td>
             </tr>
             {% endfor %}
