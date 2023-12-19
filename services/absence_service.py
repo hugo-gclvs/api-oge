@@ -7,6 +7,28 @@ import utils.data_processing as data_processing
 class AbsenceService:
     def __init__(self, oge_scraper):
         self.oge_scraper = oge_scraper
+
+    def getAllAbsencesByClassroom(self, classroom):
+        """
+        This method is used to get the absences from the OGE.
+
+        Parameters:
+            semester (int): The semester to get the absences from.
+
+        Returns:
+            list: The absences.
+        """
+        semesters = self._countSemesters()
+
+        absences = []
+        for semester in range(semesters, 0, -1):
+            absencesPage = self._fetchAbsencesForSemester(semester)
+            if absencesPage:
+                absences += data_processing.create_absences(absencesPage)
+
+        filtered_absences = filter(lambda absence: absence.classroom == classroom, absences)
+
+        return filtered_absences
         
     def getAllAbsencesBySubjectType(self, subjectType):
         """
