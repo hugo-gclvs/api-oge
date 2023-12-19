@@ -12,3 +12,4 @@ class Absence():
 
 	def __str__(self):
 		return self.subject + " - " + self.subjectType + " - " + self.classroom + " - " + self.teacher + " - " + str(self.start_date) + " - " + str(self.end_date) + " - " + self.justification
+
