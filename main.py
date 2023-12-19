@@ -15,6 +15,18 @@ def main():
 
         absence_service = AbsenceService(oge_scraper)
 
+        absences = absence_service.getAbsencesByPeriod(timestamp_start=1622505600, timestamp_end=1622592000)
+        for absence in absences:
+            print(absence)
+
+        # absences = absence_service.getAbsencesByTeacher("CHATOUX HERMINE")
+        # for absence in absences:
+        #     print(absence)
+
+        # absences = absence_service.getAbsencesBySemester(1)
+        # for absence in absences:
+        #     print(absence)
+
         # absences = absence_service.getAllAbsencesByClassroom("HS03")
         # for absence in absences:
         #     print(absence)
@@ -23,9 +35,9 @@ def main():
         # for absence in absences:
         #     print(absence)
 
-        absences = absence_service.getAllAbsences()
-        for absence in absences:
-            print(absence)
+        # absences = absence_service.getAllAbsences()
+        # for absence in absences:
+        #     print(absence)
 
     else:
         print("Error while logging in")
