@@ -33,7 +33,7 @@ class AbsenceProcessor:
 
         subject_type_index = -1
 
-        # Find the index where CM, TD, or TP appears
+        # Find the index where CM, TD, TP, Projects appears
         for i, part in enumerate(subject_parts):
             if part in ["CM", "TD", "TP", "Projets"]:
                 subject_type_index = i
