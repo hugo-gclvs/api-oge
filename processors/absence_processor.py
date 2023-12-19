@@ -25,10 +25,12 @@ class AbsenceProcessor:
         return None
 
     def _parse_standard_format(self, entry):
-        subject_details, classroom_info = entry[0].split(' \n ')
+        parts = entry[0].split(' \n ')
+        subject_details = parts[0]
+        classroom_info = parts[1] if len(parts) > 1 else "Unknown"
+
         subject_parts = subject_details.split()
 
-        # Initialize subject_type_index with a default value
         subject_type_index = -1
 
         # Find the index where CM, TD, or TP appears
@@ -37,10 +39,8 @@ class AbsenceProcessor:
                 subject_type_index = i
                 break
 
-        # Handle the case where the subject type is not found
         if subject_type_index == -1:
-            # You can decide how to handle this case. For example:
-            subject = subject_details  # Use the entire string or set a default value
+            subject = subject_details  # Fallback if no type found
             subject_type = "Unknown"
         else:
             subject = ' '.join(subject_parts[:subject_type_index])
@@ -49,6 +49,8 @@ class AbsenceProcessor:
         classroom = classroom_info.split(' (')[0]
 
         return self._create_absence_object(entry, subject, subject_type, classroom)
+
+
 
     def _parse_itc_format(self, entry):
         subject_details = entry[0].split(' \n ')

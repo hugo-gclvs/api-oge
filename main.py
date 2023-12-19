@@ -15,17 +15,17 @@ def main():
 
         absence_service = AbsenceService(oge_scraper)
 
-        absences = absence_service.getAllAbsencesByClassroom("HS03")
-        for absence in absences:
-            print(absence)
+        # absences = absence_service.getAllAbsencesByClassroom("HS03")
+        # for absence in absences:
+        #     print(absence)
 
         # absences = absence_service.getAllAbsencesBySubjectType("TD")
         # for absence in absences:
         #     print(absence)
 
-        # absences = absence_service.getAllAbsences()
-        # for absence in absences:
-        #     print(absence)
+        absences = absence_service.getAllAbsences()
+        for absence in absences:
+            print(absence)
 
     else:
         print("Error while logging in")
