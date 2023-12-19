@@ -1,6 +1,7 @@
 from datetime import datetime
+from models.absence import Absence
 import time
-from model.Absence import Absence
+import re
 
 class AbsenceProcessor:
     def __init__(self, data):
@@ -24,22 +25,22 @@ class AbsenceProcessor:
         return None
 
     def _parse_standard_format(self, entry):
-        subject_details, classroom_info = entry[0].split(' \n ')
+        parts = entry[0].split(' \n ')
+        subject_details = parts[0]
+        classroom_info = parts[1] if len(parts) > 1 else "Unknown"
+
         subject_parts = subject_details.split()
 
-        # Initialize subject_type_index with a default value
         subject_type_index = -1
 
-        # Find the index where CM, TD, or TP appears
+        # Find the index where CM, TD, TP, Projects appears
         for i, part in enumerate(subject_parts):
             if part in ["CM", "TD", "TP", "Projets"]:
                 subject_type_index = i
                 break
 
-        # Handle the case where the subject type is not found
         if subject_type_index == -1:
-            # You can decide how to handle this case. For example:
-            subject = subject_details  # Use the entire string or set a default value
+            subject = subject_details  # Fallback if no type found
             subject_type = "Unknown"
         else:
             subject = ' '.join(subject_parts[:subject_type_index])
@@ -49,17 +50,26 @@ class AbsenceProcessor:
 
         return self._create_absence_object(entry, subject, subject_type, classroom)
 
+
+
     def _parse_itc_format(self, entry):
-        # Extracting the subject and classroom from the entry
         subject_details = entry[0].split(' \n ')
         subject_parts = subject_details[0].split('_')
-        subject_name = ' '.join(subject_parts[:2])  # Assuming 'ITC316_TP2_ElecNum' format
-        subject_type = subject_parts[2]  # Assuming the third part is the subject type
 
-        # Extracting the classroom info
+        # Code du cours (ex : 'ITC316') et description supplémentaire, si elle existe
+        subject_name = subject_parts[0]
+        if len(subject_parts) > 2:
+            subject_name += ' ' + ' '.join(subject_parts[2:])
+
+        # Extraire uniquement les lettres pour le type de cours (ex : 'TP2' -> 'TP')
+        subject_type_match = re.match(r"([A-Za-z]+)", subject_parts[1])
+        subject_type = subject_type_match.group(0) if subject_type_match else "Unknown"
+
+        # Informations sur la salle de classe
         classroom = subject_details[1].split(' (')[0]
 
         return self._create_absence_object(entry, subject_name, subject_type, classroom)
+
 
     def _create_absence_object(self, entry, subject, subjectType, classroom):
         teacher = entry[1]
