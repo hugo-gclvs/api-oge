@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from services.session_manager import SessionManager
 from services.oge_scraper import OgeScraper
 from services.absence_service import AbsenceService
-# from services.grade_service import GradeService
 
 load_dotenv()
 
