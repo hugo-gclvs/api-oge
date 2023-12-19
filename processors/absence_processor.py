@@ -1,5 +1,5 @@
 from datetime import datetime
-from model.absence import Absence
+from models.absence import Absence
 import time
 import re
 

@@ -15,12 +15,16 @@ def main():
 
         absence_service = AbsenceService(oge_scraper)
 
-        absences = absence_service.getAllAbsences()
+        absences = absence_service.getAllAbsencesBySubjectType("TD")
         for absence in absences:
             print(absence)
 
+        # absences = absence_service.getAllAbsences()
+        # for absence in absences:
+        #     print(absence)
+
     else:
-        print("Échec de la connexion.")
+        print("Error while logging in")
 
 if __name__ == "__main__":
     main()
