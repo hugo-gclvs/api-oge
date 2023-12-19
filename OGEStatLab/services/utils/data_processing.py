@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from processors.absence_processor import AbsenceProcessor
+from services.processors.absence_processor import AbsenceProcessor
 
 def create_absences(absencesPage):
 	soup = BeautifulSoup(absencesPage, 'html.parser')

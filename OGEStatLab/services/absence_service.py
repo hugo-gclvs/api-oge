@@ -1,6 +1,6 @@
 import logging
 from bs4 import BeautifulSoup
-import utils.data_processing as data_processing
+import services.utils.data_processing as data_processing
 
 
 class AbsenceService:
