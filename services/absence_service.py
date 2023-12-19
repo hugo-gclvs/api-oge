@@ -24,6 +24,19 @@ class AbsenceService:
             if absencesPage:
                 absences.extend(data_processing.create_absences(absencesPage))
         return absences
+    
+    def getAllSubjectsAbsences(self):
+        """
+        This method is used to get all subjects absences.
+
+        Parameters:
+            None
+
+        Returns:
+            list: The list of subjects absences.
+        """
+        absences = self._fetchAllAbsences()
+        return list({absence.subject for absence in absences})
 
     def getAllClassroomsAbsences(self):
         """
