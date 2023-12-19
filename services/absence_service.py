@@ -8,6 +8,29 @@ class AbsenceService:
     def __init__(self, oge_scraper):
         self.oge_scraper = oge_scraper
 
+    def getAbsencesByPeriod(self, timestamp_start, timestamp_end):
+        """
+        This method is used to get the absences from the OGE.
+
+        Parameters:
+            timestamp_start (int): The start of the period.
+            timestamp_end (int): The end of the period.
+
+        Returns:
+            list: The absences.
+        """
+        semesters = self._countSemesters()
+
+        absences = []
+        for semester in range(semesters, 0, -1):
+            absencesPage = self._fetchAbsencesForSemester(semester)
+            if absencesPage:
+                absences += data_processing.create_absences(absencesPage)
+
+        filtered_absences = filter(lambda absence: absence.start_date.timestamp() >= timestamp_start and absence.end_date.timestamp() <= timestamp_end, absences)
+
+        return filtered_absences
+
     def getAbsencesByTeacher(self, teacher):
         """
         This method is used to get the absences from the OGE.
