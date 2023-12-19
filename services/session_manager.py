@@ -2,6 +2,7 @@ import logging
 import re
 import requests
 
+logging.basicConfig(level=logging.INFO)
 
 class SessionManager:
     def __init__(self, user, pwd):
