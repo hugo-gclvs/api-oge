@@ -15,9 +15,13 @@ def main():
 
         absence_service = AbsenceService(oge_scraper)
 
-        teachers = absence_service.getAllTeachersAbsences()
-        for teacher in teachers:
-            print(teacher)
+        classrooms = absence_service.getAllClassroomsAbsences()
+        for classroom in classrooms:
+            print(classroom)
+
+        # teachers = absence_service.getAllTeachersAbsences()
+        # for teacher in teachers:
+        #     print(teacher)
 
         # absences = absence_service.getAbsencesByPeriod(timestamp_start=1622505600, timestamp_end=1622592000)
         # for absence in absences:

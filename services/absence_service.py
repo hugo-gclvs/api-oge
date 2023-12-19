@@ -1,5 +1,4 @@
 import logging
-
 from bs4 import BeautifulSoup
 import utils.data_processing as data_processing
 
@@ -8,155 +7,127 @@ class AbsenceService:
     def __init__(self, oge_scraper):
         self.oge_scraper = oge_scraper
 
-    def getAllTeachersAbsences(self):
+    def _fetchAllAbsences(self):
         """
-        This method is used to get all the teachers' absences from the OGE.
+        This method is used to fetch all absences.
 
         Parameters:
             None
 
         Returns:
-            list: The teachers.
+            list: The list of absences.
         """
         semesters = self._countSemesters()
-
         absences = []
         for semester in range(semesters, 0, -1):
             absencesPage = self._fetchAbsencesForSemester(semester)
             if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
+                absences.extend(data_processing.create_absences(absencesPage))
+        return absences
 
-        teachers = []
-        for absence in absences:
-            if absence.teacher not in teachers:
-                teachers.append(absence.teacher)
+    def getAllClassroomsAbsences(self):
+        """
+        This method is used to get all classrooms absences.
 
-        return teachers
+        Parameters:
+            None
+
+        Returns:
+            list: The list of classrooms absences.
+        """
+        absences = self._fetchAllAbsences()
+        return list({absence.classroom for absence in absences})
+
+    def getAllTeachersAbsences(self):
+        """
+        This method is used to get all teachers absences.
+
+        Parameters:
+            None
+
+        Returns:
+            list: The list of teachers absences.
+        """
+        absences = self._fetchAllAbsences()
+        return list({absence.teacher for absence in absences})
 
     def getAbsencesByPeriod(self, timestamp_start, timestamp_end):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get absences by period.
 
         Parameters:
-            timestamp_start (int): The start of the period.
-            timestamp_end (int): The end of the period.
+            timestamp_start (int): The start timestamp.
+            timestamp_end (int): The end timestamp.
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
-        semesters = self._countSemesters()
-
-        absences = []
-        for semester in range(semesters, 0, -1):
-            absencesPage = self._fetchAbsencesForSemester(semester)
-            if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
-
-        filtered_absences = filter(lambda absence: absence.start_date.timestamp() >= timestamp_start and absence.end_date.timestamp() <= timestamp_end, absences)
-
-        return filtered_absences
+        absences = self._fetchAllAbsences()
+        return [absence for absence in absences if timestamp_start <= absence.start_date.timestamp() <= timestamp_end]
 
     def getAbsencesByTeacher(self, teacher):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get absences by teacher.
 
         Parameters:
-            teacher (str): The teacher to get the absences from.
+            teacher (str): The teacher name.
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
-        semesters = self._countSemesters()
-
-        absences = []
-        for semester in range(semesters, 0, -1):
-            absencesPage = self._fetchAbsencesForSemester(semester)
-            if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
-
-        filtered_absences = filter(lambda absence: absence.teacher == teacher, absences)
-
-        return filtered_absences
+        absences = self._fetchAllAbsences()
+        return [absence for absence in absences if absence.teacher == teacher]
 
     def getAbsencesBySemester(self, semester):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get absences by semester.
 
         Parameters:
-            semester (int): The semester to get the absences from.
+            semester (int): The semester.
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
         absencesPage = self._fetchAbsencesForSemester(semester)
-        if absencesPage:
-            return data_processing.create_absences(absencesPage)
-        else:
-            return []
+        return data_processing.create_absences(absencesPage) if absencesPage else []
 
     def getAllAbsencesByClassroom(self, classroom):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get all absences by classroom.
 
         Parameters:
-            semester (int): The semester to get the absences from.
+            classroom (str): The classroom name.
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
-        semesters = self._countSemesters()
+        absences = self._fetchAllAbsences()
+        return [absence for absence in absences if absence.classroom == classroom]
 
-        absences = []
-        for semester in range(semesters, 0, -1):
-            absencesPage = self._fetchAbsencesForSemester(semester)
-            if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
-
-        filtered_absences = filter(lambda absence: absence.classroom == classroom, absences)
-
-        return filtered_absences
-        
     def getAllAbsencesBySubjectType(self, subjectType):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get all absences by subject type.
 
         Parameters:
-            semester (int): The semester to get the absences from.
+            subjectType (str): The subject type.
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
-        semesters = self._countSemesters()
-
-        absences = []
-        for semester in range(semesters, 0, -1):
-            absencesPage = self._fetchAbsencesForSemester(semester)
-            if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
-
-        filtered_absences = filter(lambda absence: absence.subjectType == subjectType, absences)
-
-        return filtered_absences
+        absences = self._fetchAllAbsences()
+        return [absence for absence in absences if absence.subjectType == subjectType]
 
     def getAllAbsences(self):
         """
-        This method is used to get the absences from the OGE.
+        This method is used to get all absences.
 
         Parameters:
-            semester (int): The semester to get the absences from.
+            None
 
         Returns:
-            list: The absences.
+            list: The list of absences.
         """
-        semesters = self._countSemesters()
-
-        absences = []
-        for semester in range(semesters, 0, -1):
-            absencesPage = self._fetchAbsencesForSemester(semester)
-            if absencesPage:
-                absences += data_processing.create_absences(absencesPage)
-
-        return absences
+        return self._fetchAllAbsences()
 
     def _countSemesters(self):
         """
