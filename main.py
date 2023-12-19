@@ -9,8 +9,6 @@ load_dotenv()
 
 def main():
     # Création de l'instance de SessionManager avec les identifiants
-    print(os.getenv("API_USERNAME"))
-
     session_manager = SessionManager(user=os.getenv("API_USERNAME"), pwd=os.getenv("API_PASSWORD"))
     
     # Connexion

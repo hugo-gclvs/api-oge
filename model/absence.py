@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 class Absence():
 	def __init__(self, subject, subjectType, classroom, teacher, start_date, end_date, justification):
