@@ -45,7 +45,27 @@
 <body>
     <div class="container">
         <h1>Liste des Absences</h1>
-        <table>
+
+        <label for="teacherFilter">Filtrer par enseignant:</label>
+        <select id="teacherFilter">
+            <option value="">--Choisir un enseignant--</option>
+        </select>
+
+        <label for="subjectTypeFilter">Filtrer par type:</label>
+        <select id="subjectTypeFilter">
+            <option value="">--Choisir un type--</option>
+            <option value="CM">CM</option>
+            <option value="TD">TD</option>
+            <option value="TP">TP</option>
+            <option value="Projets">Projets</option>
+        </select>
+
+        <label for="classroomFilter">Filtrer par classe:</label>
+        <select id="classroomFilter">
+            <option value="">--Choisir un classe--</option>
+        </select>
+
+        <table id="absencesTable">
             <tr>
                 <th>Matière</th>
                 <th>Type</th>
@@ -55,18 +75,118 @@
                 <th>Date de fin</th>
                 <th>Justification</th>
             </tr>
-            {% for absence in absences %}
-            <tr>
-                <td>{{ absence.subject }}</td>
-                <td>{{ absence.subjectType }}</td>
-                <td>{{ absence.classroom }}</td>
-                <td>{{ absence.teacher }}</td>
-                <td>{{ absence.start_date|date:"d/m/Y H:i" }}</td>
-                <td>{{ absence.end_date|date:"d/m/Y H:i" }}</td>
-                <td>{{ absence.justification }}</td>
-            </tr>
-            {% endfor %}
         </table>
     </div>
+
+    <script>
+        function loadClassrooms() {
+            fetch('/absences/get_all_classrooms/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    const select = document.getElementById('classroomFilter');
+                    data.classrooms.forEach(classroom => {
+                        const option = document.createElement('option');
+                        option.value = classroom;
+                        option.textContent = classroom;
+                        select.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        loadClassrooms();
+    </script>
+
+    <script>
+        function loadTeachers() {
+            fetch('/absences/get_all_teachers/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    const select = document.getElementById('teacherFilter');
+                    data.teachers.forEach(teacher => {
+                        const option = document.createElement('option');
+                        option.value = teacher;
+                        option.textContent = teacher;
+                        select.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        loadTeachers();
+    </script>
+
+    <script>
+        function fetchFilteredAbsences(filterType, filterValue) {
+            fetch(`/absences/get_all_absences?filterType=${filterType}&filterValue=${filterValue}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    updateAbsencesList(data.absences);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function updateAbsencesList(absences) {
+            var table = document.getElementById('absencesTable');
+            var tableRows = table.getElementsByTagName('tr');
+            var rowCount = tableRows.length;
+
+            // Supprimer les anciennes lignes (à part l'entête)
+            for (var x = rowCount - 1; x > 0; x--) {
+                table.deleteRow(x);
+            }
+
+            // Ajouter les nouvelles lignes
+            absences.forEach(function(absence) {
+                var row = table.insertRow();
+                // Ajouter les cellules pour chaque propriété de l'absence
+                row.insertCell(0).innerHTML = absence.subject;
+                row.insertCell(1).innerHTML = absence.subjectType;
+                row.insertCell(2).innerHTML = absence.classroom;
+                row.insertCell(3).innerHTML = absence.teacher;
+                row.insertCell(4).innerHTML = formatDateTime(absence.start_date);
+                row.insertCell(5).innerHTML = formatDateTime(absence.end_date);
+                row.insertCell(6).innerHTML = absence.justification;
+            });
+        }
+
+        function formatDateTime(dateTimeStr) {
+            var date = new Date(dateTimeStr);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        document.getElementById('teacherFilter').addEventListener('change', function() {
+            fetchFilteredAbsences('teacher', this.value);
+        });
+
+        document.getElementById('subjectTypeFilter').addEventListener('change', function() {
+            fetchFilteredAbsences('subjectType', this.value);
+        });
+
+        document.getElementById('classroomFilter').addEventListener('change', function() {
+            fetchFilteredAbsences('classroom', this.value);
+        });
+
+        // Chargez initialement toutes les absences
+        fetchFilteredAbsences(null, null);
+    </script>
+        
 </body>
 </html>

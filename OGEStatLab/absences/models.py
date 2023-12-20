@@ -13,3 +13,13 @@ class Absence():
 	def __str__(self):
 		return self.subject + " - " + self.subjectType + " - " + self.classroom + " - " + self.teacher + " - " + str(self.start_date) + " - " + str(self.end_date) + " - " + self.justification
 
+	def to_dict(self):
+		return {
+			'subject': self.subject,
+			'subjectType': self.subjectType,
+			'teacher': self.teacher,
+			'classroom': self.classroom,
+			'start_date': self.start_date,
+			'end_date': self.end_date,
+			'justification': self.justification
+		}
