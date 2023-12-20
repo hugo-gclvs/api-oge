@@ -25,10 +25,13 @@ th {
 	background-color: #4CAF50;
 	color: white;
 }
-tr:nth-child(even) {
+/* tr:nth-child(even) {
 	background-color: #f2f2f2;
-}
+} */
 h1 {
 	text-align: center;
 	color: #333;
+}
+.unjustified {
+	background-color: rgb(255, 188, 188);
 }

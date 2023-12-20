@@ -37,6 +37,11 @@ function updateAbsencesList(absences) {
 		row.insertCell(4).innerHTML = formatDateTime(absence.start_date);
 		row.insertCell(5).innerHTML = formatDateTime(absence.end_date);
 		row.insertCell(6).innerHTML = absence.justification;
+
+		if(absence.justification === 'Aucun') {
+			row.classList.add('unjustified');
+		}
+
 	});
 }
 
@@ -76,8 +81,8 @@ document.getElementById('classroomFilter').addEventListener('change', function()
 	fetchFilteredAbsences('classroom', this.value);
 });
 
-loadOptions('/absences/get_all_classrooms/', 'classroomFilter');
-loadOptions('/absences/get_all_teachers/', 'teacherFilter');
-
 // Chargez initialement toutes les absences
 fetchFilteredAbsences(null, null);
+
+loadOptions('/absences/get_all_classrooms/', 'classroomFilter');
+loadOptions('/absences/get_all_teachers/', 'teacherFilter');
