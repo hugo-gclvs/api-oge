@@ -1,19 +1,28 @@
-function fetchFilteredAbsences(filterType, filterValue) {
-	fetch(`/absences/get_all_absences?filterType=${filterType}&filterValue=${filterValue}`, {
-		method: 'GET',
-		headers: {
-			'X-Requested-With': 'XMLHttpRequest',
-		}
-	})
-	.then(response => response.json())
-	.then(data => {
-		if (data.error) {
-			console.error(data.error);
-		} else {
-			updateAbsencesList(data.absences);
-		}
-	})
-	.catch(error => console.error('Error:', error));
+function fetchFilteredAbsences() {
+    const teacher = document.getElementById('teacherFilter').value;
+    const subjectType = document.getElementById('subjectTypeFilter').value;
+    const classroom = document.getElementById('classroomFilter').value;
+
+    let query = '/absences/get_all_absences?';
+    query += teacher ? `teacher=${teacher}&` : '';
+    query += subjectType ? `subjectType=${subjectType}&` : '';
+    query += classroom ? `classroom=${classroom}` : '';
+
+    fetch(query, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error(data.error);
+        } else {
+            updateAbsencesList(data.absences);
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 function updateAbsencesList(absences) {
@@ -69,20 +78,13 @@ function loadOptions(url, selectId) {
 	.catch(error => console.error('Error:', error));
 }
 
-document.getElementById('teacherFilter').addEventListener('change', function() {
-	fetchFilteredAbsences('teacher', this.value);
-});
+document.getElementById('teacherFilter').addEventListener('change', fetchFilteredAbsences);
+document.getElementById('subjectTypeFilter').addEventListener('change', fetchFilteredAbsences);
+document.getElementById('classroomFilter').addEventListener('change', fetchFilteredAbsences);
 
-document.getElementById('subjectTypeFilter').addEventListener('change', function() {
-	fetchFilteredAbsences('subjectType', this.value);
-});
-
-document.getElementById('classroomFilter').addEventListener('change', function() {
-	fetchFilteredAbsences('classroom', this.value);
-});
 
 // Chargez initialement toutes les absences
-fetchFilteredAbsences(null, null);
+fetchFilteredAbsences();
 
 loadOptions('/absences/get_all_classrooms/', 'classroomFilter');
 loadOptions('/absences/get_all_teachers/', 'teacherFilter');

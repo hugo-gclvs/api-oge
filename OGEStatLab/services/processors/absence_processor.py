@@ -4,6 +4,9 @@ import time
 import re
 
 class AbsenceProcessor:
+
+    id_counter = 0
+
     def __init__(self, data):
         self.data = data
 
@@ -75,7 +78,8 @@ class AbsenceProcessor:
         teacher = entry[1]
         start_date, end_date = self.convert_to_timestamps(entry[2])
         justification = entry[3] if len(entry) > 3 else "Justifié"
-        return Absence(subject, subjectType, classroom, teacher, start_date, end_date, justification)
+        AbsenceProcessor.id_counter += 1
+        return Absence(AbsenceProcessor.id_counter, subject, subjectType, classroom, teacher, start_date, end_date, justification)
     
     def convert_to_timestamps(self, date_str):
         date_part, times_part = date_str.replace("Le ", "").split(' de ')
