@@ -5,7 +5,6 @@ def create_absences(absencesPage):
 	soup = BeautifulSoup(absencesPage, 'html.parser')
 
 	absences_table = soup.find_all('tr', class_='ui-widget-content')
-	print(f"Found {len(absences_table) - 1} absences")
 
 	absences_data = []
 	for row in absences_table:

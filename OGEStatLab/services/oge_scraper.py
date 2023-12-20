@@ -10,10 +10,10 @@ class OgeScraper:
         This method is used to initialize the URLs of the OGE.
 
         Parameters:
-        None
+            None
 
         Returns:
-        None
+            None
         """
         self.home_url = "https://iutdijon.u-bourgogne.fr/oge-esirem/"
         self.login_url = "https://casiut21.u-bourgogne.fr/cas-esirem/login?service=https%3A%2F%2Fiutdijon.u-bourgogne.fr%2Foge-esirem%2F"
@@ -44,7 +44,6 @@ class OgeScraper:
         Returns:
             str: The absences page.
         """
-        print("Get absences page...")
         response = self.session_manager.session.get(self.absences_url)
         return response.text
     
@@ -58,7 +57,6 @@ class OgeScraper:
         Returns:
             str: The grades page.
         """
-        print("Get grades page...")
         response = self.session_manager.session.get(self.grades_url)
         return response.text
     
@@ -88,7 +86,6 @@ class OgeScraper:
         Returns:
             str: The absences page.
         """
-        print(f"Select semester {semester}...")
         data = self._get_absences_data(semester)
         response = self.session_manager.session.post(self.absences_url, data=data, headers=self._get_headers())
         return self._extract_content(response)
