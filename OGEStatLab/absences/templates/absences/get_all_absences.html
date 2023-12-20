@@ -5,42 +5,8 @@
     <title>Absences</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'absences/css/styles.css' %}">
 </head>
 <body>
     <div class="container">
@@ -78,115 +44,8 @@
         </table>
     </div>
 
-    <script>
-        function loadClassrooms() {
-            fetch('/absences/get_all_classrooms/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error(data.error);
-                } else {
-                    const select = document.getElementById('classroomFilter');
-                    data.classrooms.forEach(classroom => {
-                        const option = document.createElement('option');
-                        option.value = classroom;
-                        option.textContent = classroom;
-                        select.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        
-        loadClassrooms();
-    </script>
-
-    <script>
-        function loadTeachers() {
-            fetch('/absences/get_all_teachers/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error(data.error);
-                } else {
-                    const select = document.getElementById('teacherFilter');
-                    data.teachers.forEach(teacher => {
-                        const option = document.createElement('option');
-                        option.value = teacher;
-                        option.textContent = teacher;
-                        select.appendChild(option);
-                    });
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-        
-        loadTeachers();
-    </script>
-
-    <script>
-        function fetchFilteredAbsences(filterType, filterValue) {
-            fetch(`/absences/get_all_absences?filterType=${filterType}&filterValue=${filterValue}`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error(data.error);
-                } else {
-                    updateAbsencesList(data.absences);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function updateAbsencesList(absences) {
-            var table = document.getElementById('absencesTable');
-            var tableRows = table.getElementsByTagName('tr');
-            var rowCount = tableRows.length;
-
-            // Supprimer les anciennes lignes (à part l'entête)
-            for (var x = rowCount - 1; x > 0; x--) {
-                table.deleteRow(x);
-            }
-
-            // Ajouter les nouvelles lignes
-            absences.forEach(function(absence) {
-                var row = table.insertRow();
-                // Ajouter les cellules pour chaque propriété de l'absence
-                row.insertCell(0).innerHTML = absence.subject;
-                row.insertCell(1).innerHTML = absence.subjectType;
-                row.insertCell(2).innerHTML = absence.classroom;
-                row.insertCell(3).innerHTML = absence.teacher;
-                row.insertCell(4).innerHTML = formatDateTime(absence.start_date);
-                row.insertCell(5).innerHTML = formatDateTime(absence.end_date);
-                row.insertCell(6).innerHTML = absence.justification;
-            });
-        }
-
-        function formatDateTime(dateTimeStr) {
-            var date = new Date(dateTimeStr);
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-        }
-
-        document.getElementById('teacherFilter').addEventListener('change', function() {
-            fetchFilteredAbsences('teacher', this.value);
-        });
-
-        document.getElementById('subjectTypeFilter').addEventListener('change', function() {
-            fetchFilteredAbsences('subjectType', this.value);
-        });
-
-        document.getElementById('classroomFilter').addEventListener('change', function() {
-            fetchFilteredAbsences('classroom', this.value);
-        });
-
-        // Chargez initialement toutes les absences
-        fetchFilteredAbsences(null, null);
-    </script>
+    {% load static %}
+    <script src="{% static 'absences/js/absences.js' %}"></script>
         
 </body>
 </html>
