@@ -78,19 +78,6 @@ class AbsenceService:
         absences = self._fetchAllAbsences()
         return [absence for absence in absences if timestamp_start <= absence.start_date.timestamp() <= timestamp_end]
 
-    def getAbsencesByTeacher(self, teacher):
-        """
-        This method is used to get absences by teacher.
-
-        Parameters:
-            teacher (str): The teacher name.
-
-        Returns:
-            list: The list of absences.
-        """
-        absences = self._fetchAllAbsences()
-        return [absence for absence in absences if absence.teacher == teacher]
-
     def getAbsencesBySemester(self, semester):
         """
         This method is used to get absences by semester.
@@ -103,6 +90,44 @@ class AbsenceService:
         """
         absencesPage = self._fetchAbsencesForSemester(semester)
         return data_processing.create_absences(absencesPage) if absencesPage else []
+    
+    def getAbsencesWithMultipleFilters(self, teacher=None, classroom=None, subjectType=None):
+        """
+        Get absences filtered by multiple criteria: teacher, classroom, and subject type.
+
+        Parameters:
+            teacher (str, optional): The teacher name.
+            classroom (str, optional): The classroom name.
+            subjectType (str, optional): The subject type.
+
+        Returns:
+            list: The list of filtered absences.
+        """
+        absences = self._fetchAllAbsences()
+
+        if teacher:
+            absences = [absence for absence in absences if absence.teacher == teacher]
+        
+        if classroom:
+            absences = [absence for absence in absences if absence.classroom == classroom]
+
+        if subjectType:
+            absences = [absence for absence in absences if absence.subjectType == subjectType]
+
+        return absences
+    
+    def getAllAbsencesByTeacher(self, teacher):
+        """
+        This method is used to get absences by teacher.
+
+        Parameters:
+            teacher (str): The teacher name.
+
+        Returns:
+            list: The list of absences.
+        """
+        absences = self._fetchAllAbsences()
+        return [absence for absence in absences if absence.teacher == teacher]
 
     def getAllAbsencesByClassroom(self, classroom):
         """

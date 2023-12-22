@@ -25,20 +25,15 @@ def get_all_absences(request):
         return HttpResponse("Error while logging in", status=401)
 
     teacher_filter = request.GET.get('teacher')
-    subject_type_filter = request.GET.get('subjectType')
     classroom_filter = request.GET.get('classroom')
+    subject_type_filter = request.GET.get('subjectType')
 
     try:
-        # Appliquer les filtres en fonction des paramètres reçus
-        if teacher_filter:
-            absences = absence_service.getAbsencesByTeacher(teacher_filter)
-        elif subject_type_filter:
-            absences = absence_service.getAllAbsencesBySubjectType(subject_type_filter)
-        elif classroom_filter:
-            absences = absence_service.getAllAbsencesByClassroom(classroom_filter)
-        else:
-            absences = absence_service.getAllAbsences()
-
+        absences = absence_service.getAbsencesWithMultipleFilters(
+            teacher=teacher_filter,
+            classroom=classroom_filter,
+            subjectType=subject_type_filter
+        )
         absences_data = [absence.to_dict() for absence in absences]
     except Exception as e:
         return JsonResponse({'error': str(e)})
@@ -47,6 +42,7 @@ def get_all_absences(request):
         return JsonResponse({'absences': absences_data})
 
     return render(request, 'absences/get_all_absences.html', {'absences': absences_data})
+
 
 
 def get_all_teachers(request):
