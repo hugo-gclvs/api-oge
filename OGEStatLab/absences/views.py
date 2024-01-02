@@ -48,13 +48,13 @@ def get_all_absences(request):
 
 
 def get_all_teachers(request):
-    return get_absence_data('getAllTeachersAbsences')
+    return get_absence_data(request, 'getAllTeachersAbsences')
 
 def get_all_classrooms(request):
-    return get_absence_data('getAllClassroomsAbsences')
+    return get_absence_data(request, 'getAllClassroomsAbsences')
 
-def get_absence_data(method_name):
-    absence_service = create_service()
+def get_absence_data(request, method_name):
+    absence_service = create_service(request)
     if not absence_service:
         return JsonResponse({'error': 'Erreur de connexion'}, status=401)
 
