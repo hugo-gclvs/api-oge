@@ -5,8 +5,6 @@ from services.session_manager import SessionManager
 
 class MyCustomBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None):
-        print(username)
-        print(password)
         session_manager = SessionManager(user=username, pwd=password)
         if session_manager.login():
             try:
