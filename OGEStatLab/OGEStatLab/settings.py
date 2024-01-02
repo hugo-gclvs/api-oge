@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+	'accounts.apps.AccountsConfig',
 	'absences.apps.AbsencesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,6 +68,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = ['accounts.backends.MyCustomBackend']
 
 WSGI_APPLICATION = 'OGEStatLab.wsgi.application'
 
