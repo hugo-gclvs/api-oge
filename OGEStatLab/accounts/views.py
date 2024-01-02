@@ -18,10 +18,16 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            request.session['oge_user'] = username
+            request.session['oge_password'] = password
+            
             login(request, user)
-            # redirect to welcome page view
             return redirect('welcome_page')
         else:
             return HttpResponse("Nom d'utilisateur ou mot de passe incorrect")
 
     return render(request, 'accounts/login.html')
+
+def logout_view(request):
+    request.session.flush()
+    return redirect('login_view')
