@@ -12,7 +12,7 @@
         <!-- Mise à jour de l'action pour pointer vers la vue de connexion de 'accounts' -->
         <form action="{% url 'accounts:login' %}" method="post">
             {% csrf_token %} <!-- Token CSRF pour la sécurité -->
-            <h2>Connexion</h2>
+            <h2>Connexion</h2><br>
 
             <!-- Affichage des messages d'erreur -->
             {% if form.errors %}
@@ -23,6 +23,7 @@
                 <input type="text" name="username" required>
                 <label>Nom d'utilisateur</label>
             </div>
+            <br>
             <div class="input-group">
                 <input type="password" name="password" required>
                 <label>Mot de passe</label>

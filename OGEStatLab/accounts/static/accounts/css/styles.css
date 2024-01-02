@@ -10,6 +10,7 @@ body {
 }
 
 .login-container {
+    width: 300px;
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -27,7 +28,7 @@ h2 {
 }
 
 .input-group input {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
