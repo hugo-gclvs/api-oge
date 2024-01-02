@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -16,20 +16,11 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        print("username: ", username)
-        print("password: ", password)
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)  # Connexion avec le système Django
-
-            # Ici, vous initialisez votre session personnalisée
-            session_manager = SessionManager(user=username, password=password)
-            if session_manager.login():
-                request.session['oge_session'] = session_manager  # Stockez votre session_manager dans la session Django
-                return redirect('some-view-name')
-            else:
-                return HttpResponse("Échec de la connexion au service OGE")
-
+            login(request, user)
+            # redirect to welcome page view
+            return redirect('welcome_page')
         else:
             return HttpResponse("Nom d'utilisateur ou mot de passe incorrect")
 

@@ -69,6 +69,8 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ['accounts.backends.MyCustomBackend']
+
 WSGI_APPLICATION = 'OGEStatLab.wsgi.application'
 
 
