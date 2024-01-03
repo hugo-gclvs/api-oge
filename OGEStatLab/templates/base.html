@@ -17,9 +17,9 @@
             <ul class="menu">
                 <li><a href="{% url 'accounts:welcome_page' %}">Home</a></li>
                 <li class="dropdown">
-                    <a href="{% url 'absences:welcome_page' %}">Absences</a>
+                    <a href="{% url 'absences:home_page' %}">Absences</a>
                     <ul class="dropdown-content">
-                        <li><a href="{% url 'accounts:welcome_page' %}">All</a></li>
+                        <li><a href="{% url 'absences:home_page' %}">All</a></li>
                         <li><a href="#statistics-absences">Statistics</a></li>
                         <li><a href="#leaderboard-absences">Leaderboard</a></li>
                     </ul>
@@ -32,10 +32,10 @@
                         <li><a href="#leaderboard-grades">Leaderboard</a></li>
                     </ul>
                 </li>
-                {% if user.is_authenticated %}
-                <li class="login"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                {% if request.user.is_authenticated %}
+                    <li class="login"><a href="{% url 'accounts:logout' %}">Logout</a></li>
                 {% else %}
-                <li class="login"><a href="{% url 'accounts:login' %}">Login</a></li>
+                    <li class="login"><a href="{% url 'accounts:login' %}">Login</a></li>
                 {% endif %}
 
             </ul>

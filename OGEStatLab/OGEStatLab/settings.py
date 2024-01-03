@@ -51,6 +51,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE = False
+
 ROOT_URLCONF = 'OGEStatLab.urls'
 
 TEMPLATES = [
@@ -69,7 +72,8 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['accounts.backends.MyCustomBackend']
+AUTHENTICATION_BACKENDS = ['accounts.backends.MyCustomBackend',
+                           'django.contrib.auth.backends.ModelBackend',]
 
 WSGI_APPLICATION = 'OGEStatLab.wsgi.application'
 

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'absences/css/styles.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <h1>Bienvenue sur la page d'accueil de l'application web</h1>
+
+        <a href="{% url 'absences:get_all_absences' %}">Voir toutes les absences</a>
+        <br><br>
+        <a href="">Voir toutes statistiques</a>
+        <br><br>
+        <a href="">Voir le leaderboard</a>
+    </div>
+
+    {% load static %}
+    <script src="{% static 'absences/js/absences.js' %}"></script>
+        
+{% endblock %}
