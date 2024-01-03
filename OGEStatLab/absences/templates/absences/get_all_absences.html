@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="{% static 'absences/css/styles.css' %}">
 </head>
 <body>
+    <div class="logout">
+        <a href="{% url 'accounts:logout' %}" class="logout-button">Logout</a>
+    </div>
     <div class="container">
         <h1>Liste des Absences</h1>
 

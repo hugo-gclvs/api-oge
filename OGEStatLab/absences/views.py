@@ -16,15 +16,15 @@ def create_service(request):
         oge_scraper = OgeScraper(session_manager)
         return AbsenceService(oge_scraper)
     else:
-        return redirect('accounts.login_view')
+        return None
 
 def welcome_page(request):
-    return HttpResponse("Bienvenue sur la page d'accueil de l'application web")
+    return HttpResponse("Bienvenue sur la page d'accueil de l'application web<br><a href='/absences/get_all_absences'>Voir toutes les absences</a>")
 
 def get_all_absences(request):
     absence_service = create_service(request)
     if not absence_service:
-        return HttpResponse("Error while logging in", status=401)
+        return redirect('accounts:login')
 
     teacher_filter = request.GET.get('teacher')
     classroom_filter = request.GET.get('classroom')
