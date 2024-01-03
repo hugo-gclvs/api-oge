@@ -4,27 +4,36 @@ body {
 	padding: 0;
 	background-color: #f4f4f4;
 }
+
 .container {
 	width: 80%;
 	margin: auto;
 	overflow: hidden;
 }
+
 table {
 	width: 100%;
 	margin-top: 20px;
 	border-collapse: collapse;
 }
-table, th, td {
+
+table,
+th,
+td {
 	border: 1px solid #ddd;
 }
-th, td {
+
+th,
+td {
 	padding: 10px;
 	text-align: left;
 }
+
 th {
 	background-color: #4CAF50;
 	color: white;
 }
+
 /* tr:nth-child(even) {
 	background-color: #f2f2f2;
 } */
@@ -32,6 +41,20 @@ h1 {
 	text-align: center;
 	color: #333;
 }
+
 .unjustified {
 	background-color: rgb(255, 188, 188);
+}
+
+.logout-button {
+	float: right;
+	margin-top: 20px;
+	margin-right: 20px;
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 6px;
 }

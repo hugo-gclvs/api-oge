@@ -23,6 +23,5 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 def logout_view(request):
-    print("logout_view")
     request.session.flush()
     return redirect('accounts:login')
