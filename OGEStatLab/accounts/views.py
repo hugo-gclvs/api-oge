@@ -17,7 +17,9 @@ def login_view(request):
             request.session['oge_password'] = password
             
             login(request, user)
+            print(request.user.is_authenticated)
             return redirect('absences:home_page')
+
         else:
             return HttpResponse("Nom d'utilisateur ou mot de passe incorrect")
     elif request.user.is_authenticated:

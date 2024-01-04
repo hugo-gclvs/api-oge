@@ -23,6 +23,9 @@ def home_page(request):
     return render(request, 'absences/home.html')
 
 def get_all_absences(request):
+    # if not request.user.is_authenticated:
+    #     return redirect('accounts:login')
+    
     absence_service = create_service(request)
     if not absence_service:
         return redirect('accounts:login')
