@@ -1,12 +1,13 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 
-def welcome_page(request):
-    return HttpResponse("Bienvenue sur la page d'accueil de l'application web")
+def home_page(request):
+    return render(request, 'accounts/home.html')
 
 def login_view(request):
+    
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -16,12 +17,18 @@ def login_view(request):
             request.session['oge_password'] = password
             
             login(request, user)
-            return redirect('absences:welcome_page')
+            print(request.user.is_authenticated)
+            return redirect('absences:home_page')
+
         else:
             return HttpResponse("Nom d'utilisateur ou mot de passe incorrect")
+    elif request.user.is_authenticated:
+        return redirect('absences:home_page')
+    
+    print(request.user.is_authenticated)
 
     return render(request, 'accounts/login.html')
 
 def logout_view(request):
-    request.session.flush()
+    logout(request)
     return redirect('accounts:login')

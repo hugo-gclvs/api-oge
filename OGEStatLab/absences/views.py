@@ -18,10 +18,14 @@ def create_service(request):
     else:
         return None
 
-def welcome_page(request):
-    return HttpResponse("Bienvenue sur la page d'accueil de l'application web<br><a href='/absences/get_all_absences'>Voir toutes les absences</a>")
+def home_page(request):
+    print(request.user.is_authenticated)
+    return render(request, 'absences/home.html')
 
 def get_all_absences(request):
+    # if not request.user.is_authenticated:
+    #     return redirect('accounts:login')
+    
     absence_service = create_service(request)
     if not absence_service:
         return redirect('accounts:login')

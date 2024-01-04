@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_css %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}">
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
+
     <div class="login-container">
         <!-- Mise à jour de l'action pour pointer vers la vue de connexion de 'accounts' -->
         <form action="{% url 'accounts:login' %}" method="post">
@@ -31,5 +32,5 @@
             <button type="submit">Se connecter</button>
         </form>
     </div>
-</body>
-</html>
+
+{% endblock %}

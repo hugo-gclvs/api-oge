@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OGEStatLab{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <nav>
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+            <ul class="menu">
+                <li><a href="{% url 'accounts:home_page' %}">Home</a></li>
+                <li class="dropdown">
+                    <a href="{% url 'absences:home_page' %}">Absences</a>
+                    <ul class="dropdown-content">
+                        <li><a href="{% url 'absences:home_page' %}">All</a></li>
+                        <li><a href="#statistics-absences">Statistics</a></li>
+                        <li><a href="#leaderboard-absences">Leaderboard</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#grades">Grades</a>
+                    <ul class="dropdown-content">
+                        <li><a href="#all-grades">All</a></li>
+                        <li><a href="#statistics-grades">Statistics</a></li>
+                        <li><a href="#leaderboard-grades">Leaderboard</a></li>
+                    </ul>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="login"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                {% else %}
+                    <li class="login"><a href="{% url 'accounts:login' %}">Login</a></li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Hugo G. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

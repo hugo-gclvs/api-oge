@@ -1,24 +1,14 @@
-<!-- get_all_absences.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Absences</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends 'base.html' %}
+
+{% block title %}Absences{% endblock %}
+
+{% block extra_css %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'absences/css/styles.css' %}">
-</head>
-<body>
-    <div class="header">
-        {% load static %}
-        <a href="{% url 'absences:welcome_page' %}" class="logo"><img src="{% static 'images/logo.png' %}" alt="Logo"></a>
-        <div class="header-right">
-            <a href="{% url 'absences:welcome_page' %}">Accueil</a>
-        </div>
-    </div>
-    <div class="logout">
-        <a href="{% url 'accounts:logout' %}" class="logout-button">Logout</a>
-    </div>
+{% endblock %}
+
+{% block content %}
+
     <div class="container">
         <h1>Liste des Absences</h1>
 
@@ -57,5 +47,4 @@
     {% load static %}
     <script src="{% static 'absences/js/absences.js' %}"></script>
         
-</body>
-</html>
+{% endblock %}
